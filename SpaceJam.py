@@ -4,10 +4,12 @@ import SpaceJamClasses as spaceJamClasses
 import DefensePaths as defensePaths
 
 
+
 class MyApp(ShowBase): 
     def __init__(self):
         ShowBase.__init__(self) 
         self.setupScene()
+        self.setCamera()
            
                    
     def setupScene(self):
@@ -18,6 +20,12 @@ class MyApp(ShowBase):
         self.camera.setHpr(0.0, -90.0, 0.0)
         self.disableMouse()
         """
+        """
+        self.camera.setPos(0.0, 0.0, 1000.0)
+        self.camera.setHpr(0.0, -90.0, 0.0)
+        self.disableMouse()
+        """
+        
         
         self.Universe = spaceJamClasses.Universe("Universe", self.loader, self.render, 
                                                  "./Assets/Universe/Universe.x",  "./Assets/Universe/starfield-in-blue.jpg", 
@@ -53,10 +61,11 @@ class MyApp(ShowBase):
         
         self.Player = spaceJamClasses.Player("Spaceship", self.loader, self.render, 
                                              "./Assets/Spaceships/theBorg/theBorg.x",  "./Assets/Spaceships/theBorg/small_space_ship_2_color.jpg", 
-                                             (100, 100, 20), (90,90,0), (0.75)) 
+                                             (0,0,0), (0,0,0), (0.75),
+                                             self.taskMgr, self.render) 
         
         fullCycle = 60 #Controls num drones to spawn
-        for i in range(fullCycle): #Populates a cloud of Drones around Planet1
+        for i in range(fullCycle): #Populates drones
             self.DrawCloudDefense(self.Planet1, 500)
             
             self.DrawBaseballSeams(self.Planet4, i, fullCycle)
@@ -66,12 +75,7 @@ class MyApp(ShowBase):
             self.DrawYZRing(self.SpaceStation, circlePosition, 50)
             self.DrawXZRing(self.SpaceStation, circlePosition, 50)
                      
-
-    def UpdateDroneCount(self):
-        spaceJamClasses.Drone.droneCount += 1
-        nickName = "Drone" + str(spaceJamClasses.Drone.droneCount)
-        return nickName
-
+                     
     def DrawCloudDefense(self, centralObject, radius):
         droneName = self.UpdateDroneCount()
         unitVec = defensePaths.cloud()
@@ -118,6 +122,16 @@ class MyApp(ShowBase):
                     "./Assets/Spaceships/DroneDefender/DroneDefender.x", "./Assets/Spaceships/DroneDefender/octotoad1_auv.png", 
                     positionXZ, (0,0,0), 1) 
         
+    def UpdateDroneCount(self):
+        spaceJamClasses.Drone.droneCount += 1
+        nickName = "Drone" + str(spaceJamClasses.Drone.droneCount)
+        return nickName
+    
+    
+    def setCamera(self):
+        self.disableMouse()
+        self.camera.reparentTo(self.Player.modelNode)
+        self.camera.setFluidPos(0,-1, 0)#sets camera to ship cockpit    
                 
 #main        
 app = MyApp()
