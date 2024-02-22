@@ -19,12 +19,13 @@ class MyApp(ShowBase):
         self.camera.setPos(0.0, 0.0, 30000.0)
         self.camera.setHpr(0.0, -90.0, 0.0)
         self.disableMouse()
-        """
-        """
-        self.camera.setPos(0.0, 0.0, 1000.0)
+        
+        
+        self.camera.setPos(0.0, 0.0, 500.0)
         self.camera.setHpr(0.0, -90.0, 0.0)
         self.disableMouse()
         """
+        
         
         
         self.Universe = spaceJamClasses.Universe("Universe", self.loader, self.render, 
@@ -131,7 +132,7 @@ class MyApp(ShowBase):
     def setCamera(self):
         self.disableMouse()
         self.camera.reparentTo(self.Player.modelNode)
-        self.camera.setFluidPos(0,-1, 0)#sets camera to ship cockpit    
+        self.camera.setFluidPos(0,-100, 0)#sets camera to ship cockpit    
                 
 #main        
 app = MyApp()
