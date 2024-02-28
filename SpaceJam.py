@@ -132,7 +132,7 @@ class MyApp(ShowBase):
     def setCamera(self):
         self.disableMouse()
         self.camera.reparentTo(self.Player.modelNode)
-        self.camera.setFluidPos(0,-100, 0)#sets camera to ship cockpit    
+        self.camera.setFluidPos(0,1, 0)#sets camera to ship cockpit    
                 
 #main        
 app = MyApp()

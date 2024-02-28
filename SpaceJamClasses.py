@@ -2,6 +2,8 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from direct.task import Task
 
+import math
+
 class GameConstruct(ShowBase):
     def __init__(self,
                  nodeName: str, 
@@ -83,7 +85,7 @@ class Player(GameConstruct):
 
         self.accept("arrow_right", self.rightRoll, [1])
         self.accept("arrow_right-up", self.rightRoll, [0])
-            
+             
     def thrust(self, keyDown):
         if keyDown:
             self.taskManager.add(self.applyThrust, "forward-thrust")
@@ -92,7 +94,7 @@ class Player(GameConstruct):
             
     def leftTurn(self, keyDown):
         if keyDown:
-            self.taskManager.add(self.applyLeftTurn, "left-turn")
+            self.taskManager.add(self.applyLeftTurnTest, "left-turn")
         else:
             self.taskManager.remove("left-turn")
             print(self.modelNode.getHpr())
@@ -145,9 +147,28 @@ class Player(GameConstruct):
     def applyLeftTurn(self, task):
         self.modelNode.setH(self.modelNode.getH() + self.turnRate)
         return Task.cont
- 
+    
     def applyRightTurn(self, task):
         self.modelNode.setH(self.modelNode.getH() + -self.turnRate)
+        return Task.cont
+
+    def pullVector(self, hpr: Vec3):
+        """
+        Pulls actual vector to increase in movement direction for up, down, left, right movement. 
+        Needed to fix movement issues where tilting "up" tilts up relative to world, not model
+        """
+        rotation = hpr[2]
+        relativeX = self.turnRate * math.cos(math.radians(rotation))
+        relativeY = self.turnRate * math.sin(math.radians(rotation))
+        
+        return Vec3(relativeX, relativeY, 0)
+
+    def applyLeftTurnTest(self, task):
+        rotation = self.modelNode.getHpr()
+        vector = self.pullVector(rotation)
+        vectorx = vector[0]
+        vectory = vector[1]
+        self.modelNode.setHpr(self.modelNode.getH() + vectorx, self.modelNode.getP() + vectory, self.modelNode.getR())
         return Task.cont
     
     def applyUpTurn(self, task):
@@ -161,6 +182,20 @@ class Player(GameConstruct):
     """
     FIXME: Other directions after turn are turning relative to the world, not the model.
     check for getHPR method, and calc based off of sin/cos?
+    
+    Hpr is calculated relative to object's initial positon
+    Only updating one vector when it needs to be updating 2
+    
+    LVecBase3f(0, 11.5, 0)
+    LVecBase3f(0, 2, 0)
+    LVecBase3f(0, -0.5, 0)
+    LVecBase3f(0, -0.5, -12)
+    
+    LVecBase3f(0, -0.5, -41)
+    Press of 'w'
+    LVecBase3f(0, 14.5, -41)
+    
+    can just use r as the initial angle
     """
     def applyLeftRoll(self, task): 
         self.modelNode.setR(self.modelNode.getR() + self.turnRate)
