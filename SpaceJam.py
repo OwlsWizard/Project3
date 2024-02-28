@@ -4,7 +4,6 @@ import SpaceJamClasses as spaceJamClasses
 import DefensePaths as defensePaths
 
 
-
 class MyApp(ShowBase): 
     def __init__(self):
         ShowBase.__init__(self) 
@@ -25,9 +24,7 @@ class MyApp(ShowBase):
         self.camera.setHpr(0.0, -90.0, 0.0)
         self.disableMouse()
         """
-        
-        
-        
+          
         self.Universe = spaceJamClasses.Universe("Universe", self.loader, self.render, 
                                                  "./Assets/Universe/Universe.x",  "./Assets/Universe/starfield-in-blue.jpg", 
                                                  (0,0,0),(0,0,0), 15000)
